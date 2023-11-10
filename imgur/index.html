@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="icon.png">
+    <title>Image Upload | IMGUR</title>
+    <link href="style.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        var appId='41dfd580e1f6dde';
+        $("document").ready(function () {
+            function callAPI(image) {
+                console.log("Uploading file to Imgur..");
+                var apiUrl = 'https://api.imgur.com/3/image';
+                var apiKey = 'ctrlq';
+                var settings = {
+                    async: true,
+                    crossDomain: true,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    url: apiUrl,
+                    headers: {
+                        Authorization: 'Client-ID '+appId,
+                        Accept: 'application/json'
+                    },
+                    mimeType: 'multipart/form-data'
+                };
+                var formData = new FormData();
+                formData.append("image",image);
+                settings.data = formData;
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    let data = JSON.parse(response);
+                    $("#result").append("<a target='_blank' href='" + data.data.link + "'>" + data.data.link + "</a>")
+                });
+            }
+            $("#clear").on("click", function () { $("#result").empty(); })
+            $('#upload').on("click", function () {
+                var $files = $('input[type=file]').get(0).files;
+                console.log($files)
+                if ($files.length) {
+				 $("#result").append(" ")
+                    $.each($files,function(index,value){
+                        callAPI($files[index]);
+                    })
+                }
+            });
+        });
+        
+    </script>
+</head>
+<body>
+<!--<img id="output"/>-->
+<form id="imgur">
+<div class="frame">
+  <div class="center">
+		<div class="title"><div id="clear"><a href="?"><button class="reload"></button></a></div></div>
+		<div class="dropzone">
+			<div class="content">
+				<img id="output" src="upload.svg" class="upload">
+				<input type="file" class="input" accept="image/*" data-max-size="10000" onchange="loadFile(event)">
+			</div>
+		</div>
+		<div class="upload-btn" id="upload" onclick="myClass()">Upload file</div>
+  </div>
+  <div id="result"><div id="myClass" class=""></div></div>
+</div>
+</form>
+<script>
+  var loadFile = function(event) {
+    var output = document.getElementById("output");
+    output.src = URL.createObjectURL(event.target.files[0]);
+    output.onload = function() { URL.revokeObjectURL(output.src) }
+  };
+function myClass() {
+   const element = document.getElementById("myClass");
+   element.classList.add("loading");  // Add newone class
+}
+</script>
+</body>
+</html>

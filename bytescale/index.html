@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="icon.png">
+    <title>Image Upload | Bytescale</title>
+    <script src="https://js.bytescale.com/upload-widget/v4"></script>
+    <script>
+      // -----
+      // Configuration:
+      // https://www.bytescale.com/docs/upload-widget#configuration
+      // -----
+      const options = {
+        apiKey: "public_kW15bmBGjf3KS6U7BTCuDSVxDoCY", // This is your API key.
+        maxFileCount: 1
+      };
+
+      // import * as Bytescale from "@bytescale/upload-widget";
+      Bytescale.UploadWidget.open(options).then(
+        files => {
+          const fileUrls = files.map(x => x.fileUrl).join("\n");
+          const success = fileUrls.length === 0
+            ? "No file selected."
+            : `File uploaded:\n\n${fileUrls}`;
+          alert(success);
+        },
+        error => {
+          alert(error);
+        }
+      );
+    </script>
+  </head>
+  <body>
+    <div class="upload-widget__widget-base breakpoint-xl">
+      <a href="?"><img src="reload.png" alt="reload"></a>
+    </div>
+  </body>
+</html>

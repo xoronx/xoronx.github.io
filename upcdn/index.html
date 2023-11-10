@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="icon.png">
+    <title>Image Upload | UPCDN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="sdk.js"></script>
+    <script>
+      const uploadManager = new Bytescale.UploadManager({
+        apiKey: "free" // e.g. "public_xxxxx"
+      });
+      // <input type="file" onchange="onFileSelected(event)" />
+      async function onFileSelected(event) {
+        try {
+          // 1) Hide upload button when upload starts.
+          //uploadButton.remove()
+          // 2) Upload file & show progress.
+          const [ file ]    = event.target.files
+          const { fileUrl } = await uploadManager.upload({ 
+            data: file,
+            onProgress: ({ progress }) => 
+              h1.innerHTML = `File uploading... ${progress}%`
+          })
+          // 3) Display uploaded file URL.
+          h1.innerHTML = `
+            File uploaded!
+            <br/>
+            <figure class="image-container"><a href="${fileUrl}" target="_blank"><img id="chosen-image" src="${fileUrl}" atl="img"></a></figure>
+            <textarea>${fileUrl}</textarea>` 
+        } catch(e) {
+          // 4) Display errors.
+          h1.innerHTML = `Please try another file:<br/><br/>${e.message}`
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+        <h1 style="text-align:center;">Upload a file:</h1>
+        <input type="file" id="upload-button" accept="image/*" onchange="onFileSelected(event)">
+        <label for="upload-button">
+            <i class="fas fa-upload"></i> &nbsp; Choose A Photo
+        </label>
+    </div>
+    <script>
+      // DOM Elements
+      const h1 = document.getElementsByTagName("h1")[0]
+      const uploadButton = document.getElementsByTagName("label")[0]
+    </script>
+  </body>
+</html>
